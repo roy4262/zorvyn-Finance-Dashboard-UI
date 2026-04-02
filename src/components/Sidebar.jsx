@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useDashboard } from "../context/DashboardContext";
 import { cn } from "../utils/cn";
-import logo from "../assets/zorvynlogolight.png";
+import logo from "../assets/logo.png";
 const SidebarItem = ({ icon: Icon, label, active, onClick }) => (
   <button
     onClick={onClick}
