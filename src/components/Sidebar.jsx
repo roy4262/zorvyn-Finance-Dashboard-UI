@@ -48,7 +48,7 @@ const Sidebar = ({ activeTab, onChangeTab }) => {
       <div className="flex items-center px-4 mb-10">
         <div className="relative w-10 h-10 flex items-center justify-center mr-3">
           <img
-            src="/zorvynlogolight.png"
+            src="zorvynlogolight.png"
             alt="Zorvyn Logo"
             className="w-10 h-10 rounded-xl object-cover"
           />
