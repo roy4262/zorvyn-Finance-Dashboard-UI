@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useDashboard } from "../context/DashboardContext";
 import { cn } from "../utils/cn";
-
+import logo from "../assets/zorvynlogolight.png";
 const SidebarItem = ({ icon: Icon, label, active, onClick }) => (
   <button
     onClick={onClick}
@@ -48,7 +48,7 @@ const Sidebar = ({ activeTab, onChangeTab }) => {
       <div className="flex items-center px-4 mb-10">
         <div className="relative w-10 h-10 flex items-center justify-center mr-3">
           <img
-            src="src\assets\zorvynlogolight.png"
+            src={logo}
             alt="Zorvyn Logo"
             className="w-10 h-10 rounded-xl object-cover"
           />
