@@ -18,20 +18,24 @@ const formatDate = (date) => {
 const CustomTooltip = ({ active, payload }) => {
   if (!active || !payload || payload.length === 0) return null;
   return (
-    <div className="bg-slate-900 border border-slate-700 p-2 rounded-lg text-xs text-white">
-      <div className="font-bold mb-1">{payload[0].payload.label}</div>
-      {payload.map((p) => (
-        <div
-          key={p.dataKey}
-          className="flex items-center justify-between gap-2"
-        >
-          <span className="capitalize">{p.name}</span>
-          <span className="font-bold">
-            {p.dataKey === "cumulative" ? "₹" : "$"}
-            {Number(p.value).toLocaleString()}
-          </span>
-        </div>
-      ))}
+    <div className="bg-white/90 dark:bg-[#0B0D17]/90 backdrop-blur-xl border border-slate-200 dark:border-white/10 p-3 rounded-xl shadow-2xl">
+      <div className="font-bold text-slate-700 dark:text-slate-300 mb-2 text-[10px] uppercase tracking-widest">{payload[0].payload.label}</div>
+      <div className="space-y-1.5">
+        {payload.map((p) => (
+          <div
+            key={p.dataKey}
+            className="flex items-center justify-between gap-4"
+          >
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: p.color }}></div>
+              <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 capitalize">{p.name}</span>
+            </div>
+            <span className="text-xs font-bold text-slate-900 dark:text-white">
+              ${Number(p.value).toLocaleString("en-US")}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
@@ -62,7 +66,6 @@ const MainChart = () => {
       const key = parsed.toISOString().slice(0, 10);
       if (!dataMap[key]) return;
 
-      // Normalize transaction type support for both legacy and current terms
       if (tx.type === "Income" || tx.type === "Deposit") {
         dataMap[key].income += Number(tx.amount || 0);
       } else if (tx.type === "Expense" || tx.type === "Withdrawal") {
@@ -79,135 +82,98 @@ const MainChart = () => {
         cumulative: Number(cumulativeNet.toFixed(2)),
       };
     });
-    const hasData = result.some((item) => item.income > 0 || item.expenses > 0);
-
-    if (!hasData) {
-      let inc = 5000;
-      let exp = 2400;
-      return result.map((item, idx) => {
-        inc += Math.round((Math.sin(idx / 5) + 1) * 220);
-        exp += Math.round((Math.cos(idx / 4) + 1) * 80);
-        return { ...item, income: inc, expenses: exp };
-      });
-    }
-
+    
     return result;
   }, [transactions]);
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 min-h-[450px] h-full flex flex-col group hover:border-slate-700 transition-colors shadow-2xl shadow-blue-500/5">
-      <div className="flex items-center justify-between mb-6">
+    <div className="glass-card rounded-[24px] p-6 min-h-[450px] h-full flex flex-col group hover:border-slate-300 dark:hover:border-white/20 transition-all duration-500">
+      <div className="flex items-start justify-between mb-8">
         <div>
-          <h3 className="text-lg font-bold text-white tracking-tight">
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
             Balance Trend (Last 30 Days)
           </h3>
-          <p className="text-xs text-slate-500 font-medium">
+          <p className="text-[10px] text-slate-600 dark:text-slate-500 font-bold uppercase tracking-widest mt-1">
             Cumulative net balance trend (income vs expense)
           </p>
         </div>
-        <div className="flex items-center space-x-1 bg-slate-800/50 p-1 rounded-xl border border-slate-700">
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+        <div className="px-2 py-1 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-lg backdrop-blur-md">
+          <span className="text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
             Last 30 days
           </span>
         </div>
       </div>
-      <div className="chart-legend flex gap-3 mb-4 text-xs">
-        <span className="legend-item flex items-center gap-1 text-slate-400">
-          <span
-            className="legend-dot w-2 h-2 rounded-full"
-            style={{ background: "#10b981" }}
-          ></span>
-          Income
-        </span>
-        <span className="legend-item flex items-center gap-1 text-slate-400">
-          <span
-            className="legend-dot w-2 h-2 rounded-full"
-            style={{ background: "#ef4444" }}
-          ></span>
-          Expenses
-        </span>
+      
+      <div className="flex gap-4 mb-6">
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-[#10b981]"></div>
+          <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">InCOME</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-[#ef4444]"></div>
+          <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">EXPENSES</span>
+        </div>
       </div>
 
-      <div className="flex-1 w-full mt-4 relative">
-        {data.length === 0 ? (
-          <div className="absolute inset-0 flex items-center justify-center text-slate-500 text-sm font-medium">
-            No transaction data available for this category
-          </div>
-        ) : (
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart
-              data={data}
-              margin={{ top: 5, right: 15, left: 0, bottom: 0 }}
-            >
-              <defs>
-                <linearGradient id="incomeGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#10b981" stopOpacity={0.35} />
-                  <stop offset="100%" stopColor="#10b981" stopOpacity={0} />
-                </linearGradient>
-                <linearGradient id="expenseGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#ef4444" stopOpacity={0.35} />
-                  <stop offset="100%" stopColor="#ef4444" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis
-                dataKey="label"
-                tick={{ fill: "#94a3b8", fontSize: 12 }}
-                axisLine={{ stroke: "#334155" }}
-                tickLine={false}
-              />
-              <YAxis
-                tick={{ fill: "#94a3b8", fontSize: 12 }}
-                axisLine={false}
-                tickLine={false}
-                domain={[0, "dataMax"]}
-                tickCount={6}
-                tickFormatter={(v) => `$${(v / 1000).toFixed(1)}k`}
-              />
-              <Tooltip content={<CustomTooltip />} />
-              <Area
-                type="monotone"
-                dataKey="income"
-                name="Income"
-                stroke="#10b981"
-                strokeWidth={2.5}
-                fill="url(#incomeGrad)"
-                dot={{ r: 4, fill: "#10b981", strokeWidth: 0 }}
-                activeDot={{
-                  r: 6,
-                  fill: "#10b981",
-                  stroke: "white",
-                  strokeWidth: 2,
-                }}
-              />
-              <Area
-                type="monotone"
-                dataKey="expenses"
-                name="Expenses"
-                stroke="#ef4444"
-                strokeWidth={2.5}
-                fill="url(#expenseGrad)"
-                dot={{ r: 4, fill: "#ef4444", strokeWidth: 0 }}
-                activeDot={{
-                  r: 6,
-                  fill: "#ef4444",
-                  stroke: "white",
-                  strokeWidth: 2,
-                }}
-              />
-              <Area
-                type="monotone"
-                dataKey="cumulative"
-                name="Cumulative"
-                stroke="#3b82f6"
-                strokeWidth={2.5}
-                fill="rgba(59,130,246,0.2)"
-                dot={false}
-                activeDot={false}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        )}
+      <div className="flex-1 w-full relative">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart
+            data={data}
+            margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
+          >
+            <defs>
+              <linearGradient id="balanceGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.2} />
+                <stop offset="100%" stopColor="#3b82f6" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-slate-200 dark:text-white/5" vertical={false} />
+            <XAxis
+              dataKey="label"
+              tick={{ fill: "#64748b", fontSize: 10, fontWeight: 600 }}
+              axisLine={false}
+              tickLine={false}
+              dy={10}
+              interval={5}
+            />
+            <YAxis
+              tick={{ fill: "#64748b", fontSize: 10, fontWeight: 600 }}
+              axisLine={false}
+              tickLine={false}
+              tickFormatter={(v) => `$${(v / 1000).toFixed(1)}k`}
+            />
+            <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 1 }} />
+            <Area
+              type="monotone"
+              dataKey="cumulative"
+              name="Balance"
+              stroke="#3b82f6"
+              strokeWidth={3}
+              fill="url(#balanceGrad)"
+              animationDuration={2000}
+            />
+            <Area
+              type="monotone"
+              dataKey="income"
+              name="Income"
+              stroke="#10b981"
+              strokeWidth={2}
+              fill="transparent"
+              strokeDasharray="5 5"
+              animationDuration={2000}
+            />
+            <Area
+              type="monotone"
+              dataKey="expenses"
+              name="Expenses"
+              stroke="#ef4444"
+              strokeWidth={2}
+              fill="transparent"
+              strokeDasharray="5 5"
+              animationDuration={2000}
+            />
+          </AreaChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );

@@ -10,6 +10,27 @@ import {
 } from "recharts";
 import { useDashboard } from "../context/DashboardContext";
 
+const CustomTooltip = ({ active, payload }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-3 rounded-xl shadow-2xl">
+        <p className="text-xs font-bold text-slate-900 dark:text-white mb-2">{payload[0].payload.month}</p>
+        <div className="space-y-1">
+          {payload.map((p, i) => (
+            <div key={i} className="flex items-center justify-between gap-4">
+              <span className="text-[10px] font-bold text-slate-500 uppercase">{p.name}</span>
+              <span className="text-xs font-bold" style={{ color: p.color }}>
+                ₹{Number(p.value).toLocaleString("en-IN")}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+  return null;
+};
+
 const BalanceTrend = () => {
   const { transactions } = useDashboard();
 
@@ -56,9 +77,9 @@ const BalanceTrend = () => {
   }, [transactions]);
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 h-[260px] flex flex-col shadow-2xl shadow-blue-500/5">
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 h-[260px] flex flex-col shadow-2xl shadow-blue-500/5">
       <div className="mb-3">
-        <h3 className="text-lg font-bold text-white tracking-tight">
+        <h3 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
           Balance Trend (Last 10 Months)
         </h3>
         <p className="text-xs text-slate-500">
@@ -76,36 +97,34 @@ const BalanceTrend = () => {
               data={data}
               margin={{ top: 5, right: 5, left: 0, bottom: 0 }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="date" tick={{ fill: "#94a3b8", fontSize: 10 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-slate-100 dark:text-slate-800" />
+              <XAxis dataKey="month" tick={{ fill: "#94a3b8", fontSize: 10 }} axisLine={false} tickLine={false} />
               <YAxis
                 tick={{ fill: "#94a3b8", fontSize: 10 }}
-                tickFormatter={(val) => `₹${Math.round(val)}`}
+                tickFormatter={(val) => `₹${Math.round(val / 1000)}k`}
+                axisLine={false}
+                tickLine={false}
               />
               <Tooltip
-                contentStyle={{
-                  backgroundColor: "#0f172a",
-                  border: "1px solid #334155",
-                  borderRadius: 10,
-                }}
-                formatter={(value, name) => [
-                  `₹${Number(value).toLocaleString("en-IN")}`,
-                  name,
-                ]}
+                content={<CustomTooltip />}
+                cursor={{ stroke: 'currentColor', strokeWidth: 1, strokeDasharray: '4 4' }}
+                className="text-slate-200 dark:text-slate-700"
               />
               <Line
                 type="monotone"
                 dataKey="balance"
+                name="Balance"
                 stroke="#3b82f6"
                 strokeWidth={3}
-                dot={{ r: 2 }}
+                dot={{ r: 2, fill: "#3b82f6" }}
               />
               <Line
                 type="monotone"
                 dataKey="net"
+                name="Net Flow"
                 stroke="#f43f5e"
                 strokeWidth={2}
-                dot={{ r: 2 }}
+                dot={{ r: 2, fill: "#f43f5e" }}
                 strokeDasharray="3 3"
               />
             </LineChart>

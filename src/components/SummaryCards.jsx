@@ -11,56 +11,56 @@ import { useDashboard } from "../context/DashboardContext";
 import { cn } from "../utils/cn";
 
 const SummaryCard = ({ title, amount, change, icon: Icon, color, trend }) => (
-  <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 relative overflow-hidden group hover:border-slate-700 transition-all hover:shadow-2xl hover:shadow-blue-500/5 duration-500">
-    <div className="flex items-start justify-between">
-      <div className="space-y-4">
-        <div className="flex items-center space-x-2 text-slate-400 group-hover:text-slate-300 transition-colors">
+  <div className="glass-card rounded-[24px] p-6 relative overflow-hidden group hover:border-white/20 transition-all duration-500">
+    <div className="flex flex-col space-y-4">
+      <div className="flex items-center space-x-3">
+        <div
+          className={cn(
+            "w-10 h-10 rounded-xl flex items-center justify-center border transition-all duration-500 group-hover:scale-110 shadow-lg",
+            color === "text-blue-500" ? "bg-blue-500/10 border-blue-500/20 text-blue-600 dark:text-blue-400 shadow-blue-500/10" :
+            color === "text-emerald-500" ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400 shadow-emerald-500/10" :
+            color === "text-rose-500" ? "bg-rose-500/10 border-rose-500/20 text-rose-600 dark:text-rose-400 shadow-rose-500/10" :
+            "bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-400 shadow-amber-500/10"
+          )}
+        >
+          <Icon size={20} />
+        </div>
+        <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+          {title}
+        </span>
+      </div>
+
+      <div className="space-y-1">
+        <h3 className="text-[28px] font-bold text-slate-900 dark:text-white tracking-tight">
+          ${amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+        </h3>
+        <div className="flex items-center space-x-2">
           <div
             className={cn(
-              "p-2 rounded-lg bg-slate-800 border border-slate-700",
-              color,
+              "flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold border transition-all duration-500",
+              trend === "up"
+                ? "text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
+                : "text-rose-600 dark:text-rose-400 bg-rose-500/10 border-rose-500/20",
+              change === "N/A" && "text-slate-500 dark:text-slate-400 bg-slate-400/10 border-slate-400/20"
             )}
           >
-            <Icon className="w-4 h-4" />
+            {change !== "N/A" && (trend === "up" ? (
+              <ArrowUpRight className="w-3 h-3 mr-0.5" />
+            ) : (
+              <ArrowDownRight className="w-3 h-3 mr-0.5" />
+            ))}
+            {change}
+            {change !== "N/A" && "%"}
           </div>
-          <span className="text-[10px] font-bold uppercase tracking-[0.15em]">
-            {title}
+          <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">
+            from last month
           </span>
-        </div>
-        <div className="space-y-1">
-          <h3 className="text-3xl font-bold text-white tracking-tight">
-            ${amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-          </h3>
-          <div className="flex items-center space-x-1.5">
-            <span
-              className={cn(
-                "text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center bg-opacity-10",
-                trend === "up"
-                  ? "text-emerald-500 bg-emerald-500"
-                  : "text-rose-500 bg-rose-500",
-              )}
-            >
-              {trend === "up" ? (
-                <ArrowUpRight className="w-3 h-3 mr-0.5" />
-              ) : (
-                <ArrowDownRight className="w-3 h-3 mr-0.5" />
-              )}
-              {change}%
-            </span>
-            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
-              from last month
-            </span>
-          </div>
         </div>
       </div>
     </div>
 
-    <div
-      className={cn(
-        "absolute -right-4 -bottom-4 w-24 h-24 blur-3xl opacity-10 group-hover:opacity-20 transition-opacity rounded-full",
-        color.replace("text-", "bg-"),
-      )}
-    ></div>
+    {/* Decorative light reflection */}
+    <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/5 blur-3xl rounded-full group-hover:bg-white/10 transition-all duration-700"></div>
   </div>
 );
 
@@ -68,46 +68,87 @@ const SummaryCards = () => {
   const { transactions } = useDashboard();
 
   const stats = useMemo(() => {
-    const income = transactions
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
+    const lastMonthDate = new Date(now);
+    lastMonthDate.setMonth(now.getMonth() - 1);
+    const lastMonth = lastMonthDate.getMonth();
+    const lastMonthYear = lastMonthDate.getFullYear();
+
+    const filterByMonth = (txs, month, year) =>
+      txs.filter((t) => {
+        const d = new Date(t.date);
+        return d.getMonth() === month && d.getFullYear() === year;
+      });
+
+    const currentTxs = filterByMonth(transactions, currentMonth, currentYear);
+    const lastTxs = filterByMonth(transactions, lastMonth, lastMonthYear);
+
+    const getStats = (txs) => {
+      const income = txs
+        .filter((t) => t.type === "Income")
+        .reduce((acc, t) => acc + t.amount, 0);
+      const expenses = txs
+        .filter((t) => t.type === "Expense")
+        .reduce((acc, t) => acc + t.amount, 0);
+      return { income, expenses, balance: income - expenses };
+    };
+
+    const current = getStats(currentTxs);
+    const last = getStats(lastTxs);
+
+    const calculateChange = (curr, prev) => {
+      if (prev === 0) return curr > 0 ? "100" : "0";
+      return (((curr - prev) / Math.abs(prev)) * 100).toFixed(1);
+    };
+
+    const incomeChange = calculateChange(current.income, last.income);
+    const expenseChange = calculateChange(current.expenses, last.expenses);
+    const balanceChange = calculateChange(current.balance, last.balance);
+
+    // For Total Balance, we still show all-time balance but the trend is for this month
+    const totalIncome = transactions
       .filter((t) => t.type === "Income")
       .reduce((acc, t) => acc + t.amount, 0);
-
-    const expenses = transactions
+    const totalExpenses = transactions
       .filter((t) => t.type === "Expense")
       .reduce((acc, t) => acc + t.amount, 0);
-
-    const balance = income - expenses;
-    const savings = income > expenses ? income - expenses : 0;
+    const totalBalance = totalIncome - totalExpenses;
 
     return [
       {
         title: "Total Balance",
-        amount: balance,
-        change: "2.5",
+        amount: totalBalance,
+        change: Math.abs(parseFloat(balanceChange)),
         icon: Wallet,
         color: "text-blue-500",
-        trend: "up",
+        trend: parseFloat(balanceChange) >= 0 ? "up" : "down",
       },
       {
         title: "Total Income",
-        amount: income,
-        change: "1.2",
+        amount: totalIncome,
+        change: Math.abs(parseFloat(incomeChange)),
         icon: TrendingUp,
         color: "text-emerald-500",
-        trend: "up",
+        trend: parseFloat(incomeChange) >= 0 ? "up" : "down",
       },
       {
         title: "Total Expenses",
-        amount: expenses,
-        change: "0.8",
+        amount: totalExpenses,
+        change: Math.abs(parseFloat(expenseChange)),
         icon: Receipt,
         color: "text-rose-500",
-        trend: "down",
+        trend: parseFloat(expenseChange) >= 0 ? "up" : "down",
       },
       {
         title: "Monthly Savings",
-        amount: savings,
-        change: "5.4",
+        amount:
+          current.income - current.expenses > 0
+            ? current.income - current.expenses
+            : 0,
+        change: "N/A",
         icon: PiggyBank,
         color: "text-amber-500",
         trend: "up",

@@ -11,37 +11,36 @@ import { useDashboard } from "./context/DashboardContext";
 import { cn } from "./utils/cn";
 
 function App() {
-  const { darkMode } = useDashboard();
   const [activeTab, setActiveTab] = React.useState("dashboard");
 
   return (
-    <div
-      className={cn(
-        "min-h-screen transition-colors duration-300 flex",
-        darkMode ? "bg-slate-950 text-slate-200" : "bg-slate-50 text-slate-900",
-      )}
-    >
+    <div className="h-screen bg-slate-50 dark:bg-[#0B0D17] text-slate-900 dark:text-slate-200 flex overflow-hidden relative transition-colors duration-300">
+      {/* Background Glows */}
+      <div className="absolute top-[-10%] left-[-5%] w-[40%] h-[40%] bg-blue-600/10 dark:bg-blue-600/10 blur-[120px] rounded-full"></div>
+      <div className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] bg-purple-600/10 dark:bg-purple-600/10 blur-[120px] rounded-full"></div>
+      <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] bg-blue-400/5 dark:bg-blue-400/5 blur-[100px] rounded-full"></div>
+
       <Sidebar activeTab={activeTab} onChangeTab={setActiveTab} />
 
-      <div className="flex-1 flex flex-col min-h-screen lg:pl-64">
+      <div className="flex-1 flex flex-col h-screen relative z-10 lg:pl-64">
         <Header />
 
-        <main className="flex-1 p-4 md:p-8 overflow-y-auto">
-          <div className="max-w-[1600px] mx-auto space-y-8 pb-12">
+        <main className="flex-1 p-6 overflow-y-auto custom-scrollbar">
+          <div className="max-w-[1600px] mx-auto space-y-6">
             {activeTab === "dashboard" && (
               <>
                 <SummaryCards />
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                  <div className="lg:col-span-2 space-y-8">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                  <div className="lg:col-span-8 space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <MainChart />
                       <SpendingBreakdown />
                     </div>
                     <Transactions />
                   </div>
 
-                  <div className="lg:col-span-1 space-y-8">
+                  <div className="lg:col-span-4 space-y-6">
                     <RightPanel />
                     <Insights />
                   </div>
@@ -58,7 +57,6 @@ function App() {
 
             {activeTab === "insights" && (
               <div className="space-y-6">
-                <h1 className="text-2xl font-bold">Insights</h1>
                 <Insights />
               </div>
             )}

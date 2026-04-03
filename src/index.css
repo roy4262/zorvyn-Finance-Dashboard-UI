@@ -4,8 +4,32 @@
 
 @layer base {
   body {
-    @apply antialiased;
+    @apply antialiased overflow-hidden;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
+}
+
+.glass {
+  @apply bg-white/40 dark:bg-white/5 border border-slate-200/50 dark:border-white/10 backdrop-blur-xl transition-all duration-300;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+}
+
+.dark .glass {
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-card {
+  @apply bg-white/50 dark:bg-transparent border border-slate-200 dark:border-white/10 backdrop-blur-xl transition-all duration-300;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+}
+
+.dark .glass-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+}
+
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
