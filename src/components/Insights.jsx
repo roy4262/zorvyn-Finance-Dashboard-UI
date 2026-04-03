@@ -154,6 +154,7 @@ const Insights = () => {
             sub: `₹${metrics.topCategoryAmount.toLocaleString()}`,
             icon: BarChart3,
             color: "blue",
+            mesh: "from-blue-500/20 via-indigo-500/10 to-purple-500/20",
           },
           {
             label: "Overspending",
@@ -161,6 +162,7 @@ const Insights = () => {
             sub: metrics.overspending > 0 ? "Above monthly avg" : "Within normal range",
             icon: metrics.overspending > 0 ? TrendingUp : TrendingDown,
             color: metrics.overspending > 0 ? "rose" : "emerald",
+            mesh: metrics.overspending > 0 ? "from-rose-500/20 via-orange-500/10 to-amber-500/20" : "from-emerald-500/20 via-teal-500/10 to-cyan-500/20",
           },
           {
             label: "Budget Status",
@@ -168,6 +170,7 @@ const Insights = () => {
             sub: "Total budget utilized",
             icon: Wallet,
             color: metrics.budgetStatus > 80 ? "amber" : "blue",
+            mesh: "from-amber-500/20 via-yellow-500/10 to-orange-500/20",
           },
           {
             label: "Savings Rate",
@@ -175,59 +178,112 @@ const Insights = () => {
             sub: "Current month net",
             icon: Target,
             color: "emerald",
+            mesh: "from-emerald-500/20 via-green-500/10 to-lime-500/20",
           },
         ].map((card, i) => (
-          <div key={i} className="bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200 dark:border-slate-800/50 rounded-3xl p-6 hover:border-slate-300 dark:hover:border-slate-700 transition-all group relative overflow-hidden">
-            <div className={`absolute top-0 right-0 w-24 h-24 bg-${card.color}-500/5 blur-3xl -mr-12 -mt-12 group-hover:bg-${card.color}-500/10 transition-all`}></div>
-            <div className="flex items-center space-x-4 relative z-10">
-              <div className={`p-3 bg-${card.color}-500/10 rounded-2xl text-${card.color}-400`}>
-                <card.icon className="w-6 h-6" />
+          <div key={i} className={cn(
+            "group relative overflow-hidden rounded-[2rem] p-6 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-blue-500/10",
+            "bg-white/40 dark:bg-white/[0.03] backdrop-blur-3xl border border-white/20 dark:border-white/10"
+          )}>
+            {/* Holographic Mesh Gradient */}
+            <div className={cn(
+              "absolute inset-0 bg-gradient-to-br opacity-30 group-hover:opacity-60 transition-opacity duration-700",
+              card.mesh
+            )}></div>
+            
+            <div className="relative z-10 flex items-center space-x-5 w-full">
+              <div className="relative flex-shrink-0">
+                <div className={cn(
+                  "p-4 rounded-2xl shadow-lg transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3",
+                  `bg-${card.color}-500/20 text-${card.color}-400 backdrop-blur-md border border-${card.color}-500/30`
+                )}>
+                  <card.icon className="w-7 h-7 filter drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+                </div>
+                {/* 3D Glass Layer */}
+                <div className="absolute inset-0 bg-white/10 rounded-2xl blur-sm -z-10 transform translate-x-1 translate-y-1"></div>
               </div>
-              <div>
-                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{card.label}</p>
-                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-0.5">{card.value}</h3>
-                <p className="text-xs text-slate-400 font-medium mt-0.5">{card.sub}</p>
+              
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.2em] mb-1 truncate">{card.label}</p>
+                <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight truncate">{card.value}</h3>
+                <p className="text-[11px] text-slate-400 font-bold mt-1.5 flex items-center truncate">
+                  <Sparkles className="w-3 h-3 mr-1 flex-shrink-0 text-amber-400" />
+                  <span className="truncate">{card.sub}</span>
+                </p>
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      <div className="bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200 dark:border-slate-800/50 rounded-3xl p-8">
-        <div className="flex items-center justify-between mb-8">
+      <div className="bg-white/40 dark:bg-white/[0.03] backdrop-blur-3xl border border-white/20 dark:border-white/10 rounded-[2.5rem] p-8 relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 blur-[100px] -mr-32 -mt-32"></div>
+        <div className="flex items-center justify-between mb-8 relative z-10">
           <div>
-            <h4 className="text-lg font-bold text-slate-900 dark:text-white">Monthly Comparison Chart</h4>
-            <p className="text-xs text-slate-500 mt-1">Cash flow analysis: Income vs Expenses</p>
+            <h4 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">Monthly Comparison</h4>
+            <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mt-1">Cash flow analytics</p>
           </div>
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-1.5">
-              <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-              <span className="text-[10px] font-bold text-slate-400 uppercase">Income</span>
+          <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-2 bg-blue-500/10 px-3 py-1.5 rounded-full border border-blue-500/20">
+              <span className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
+              <span className="text-[10px] font-bold text-blue-500 uppercase tracking-wider">Income</span>
             </div>
-            <div className="flex items-center space-x-1.5">
-              <span className="w-2 h-2 rounded-full bg-rose-500"></span>
-              <span className="text-[10px] font-bold text-slate-400 uppercase">Expenses</span>
+            <div className="flex items-center space-x-2 bg-rose-500/10 px-3 py-1.5 rounded-full border border-rose-500/20">
+              <span className="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.8)]"></span>
+              <span className="text-[10px] font-bold text-rose-500 uppercase tracking-wider">Expenses</span>
             </div>
           </div>
         </div>
-        <div className="h-[300px] w-full">
+        <div className="h-[350px] w-full relative z-10">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={metrics.monthly} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+            <AreaChart data={metrics.monthly} margin={{ top: 20, right: 20, left: -10, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorInc" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2} />
-                  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                  <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.4} />
+                  <stop offset="100%" stopColor="#3b82f6" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="colorExp" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#ef4444" stopOpacity={0.1} />
-                  <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+                  <stop offset="0%" stopColor="#f43f5e" stopOpacity={0.3} />
+                  <stop offset="100%" stopColor="#f43f5e" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 11, fontWeight: 700 }} dy={10} />
-              <YAxis axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 10 }} tickFormatter={(v) => `₹${v / 1000}k`} />
-              <Tooltip content={<CustomTooltip />} />
-              <Area type="monotone" dataKey="income" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorInc)" />
-              <Area type="monotone" dataKey="expenses" stroke="#ef4444" strokeWidth={2} fillOpacity={1} fill="url(#colorExp)" strokeDasharray="5 5" />
+              <XAxis 
+                dataKey="label" 
+                axisLine={false} 
+                tickLine={false} 
+                tick={{ fill: "#94a3b8", fontSize: 11, fontWeight: 800 }} 
+                dy={15} 
+              />
+              <YAxis 
+                axisLine={false} 
+                tickLine={false} 
+                tick={{ fill: "#94a3b8", fontSize: 10, fontWeight: 700 }} 
+                tickFormatter={(v) => `₹${v / 1000}k`} 
+              />
+              <Tooltip 
+                content={<CustomTooltip />} 
+                cursor={{ stroke: '#3b82f6', strokeWidth: 1, strokeDasharray: '4 4' }}
+              />
+              <Area 
+                type="monotone" 
+                dataKey="income" 
+                stroke="#3b82f6" 
+                strokeWidth={4} 
+                fillOpacity={1} 
+                fill="url(#colorInc)" 
+                animationDuration={2000}
+                activeDot={{ r: 6, fill: '#3b82f6', stroke: '#fff', strokeWidth: 2, shadow: '0 0 10px rgba(59,130,246,0.8)' }}
+              />
+              <Area 
+                type="monotone" 
+                dataKey="expenses" 
+                stroke="#f43f5e" 
+                strokeWidth={4} 
+                fillOpacity={1} 
+                fill="url(#colorExp)" 
+                animationDuration={2500}
+                activeDot={{ r: 6, fill: '#f43f5e', stroke: '#fff', strokeWidth: 2, shadow: '0 0 10px rgba(244,63,94,0.8)' }}
+              />
             </AreaChart>
           </ResponsiveContainer>
         </div>

@@ -20,6 +20,11 @@ function App() {
       <div className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] bg-purple-600/10 dark:bg-purple-600/10 blur-[120px] rounded-full"></div>
       <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] bg-blue-400/5 dark:bg-blue-400/5 blur-[100px] rounded-full"></div>
 
+      {/* Branded Watermark */}
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none opacity-[0.02] dark:opacity-[0.03] overflow-hidden z-0">
+        <span className="text-[60vw] font-black select-none tracking-tighter transform -rotate-12">Z</span>
+      </div>
+
       <Sidebar activeTab={activeTab} onChangeTab={setActiveTab} />
 
       <div className="flex-1 flex flex-col h-screen relative z-10 lg:pl-64">

@@ -522,63 +522,65 @@ const Transactions = () => {
           {alertMessage}
         </div>
       )}
-      <div className="overflow-x-auto custom-scrollbar">
-        <table className="w-full text-left">
-          <thead className="bg-slate-50 dark:bg-slate-900/50 text-[10px] text-slate-500 uppercase tracking-[0.1em] font-bold border-b border-slate-200 dark:border-slate-800/50">
+      <div className="overflow-x-auto custom-scrollbar px-6 pb-6">
+        <table className="w-full text-left border-separate border-spacing-y-3">
+          <thead className="text-[10px] text-slate-500 uppercase tracking-[0.15em] font-bold">
             <tr>
-              <th className="px-6 py-4">Date</th>
-              <th className="px-6 py-4">Description</th>
-              <th className="px-6 py-4">Category</th>
-              <th className="px-6 py-4">Type</th>
-              <th className="px-6 py-4">Amount</th>
-              <th className="px-6 py-4">Actions</th>
+              <th className="px-4 py-2">Date</th>
+              <th className="px-4 py-2">Description</th>
+              <th className="px-4 py-2">Category</th>
+              <th className="px-4 py-2">Type</th>
+              <th className="px-4 py-2 text-right">Amount</th>
+              <th className="px-4 py-2 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-200 dark:divide-slate-800/50">
+          <tbody>
             {sortedAndFiltered.map((t) => (
               <tr
                 key={t.id}
-                className="group/row hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors"
+                className="group/row bg-white/50 dark:bg-white/[0.03] hover:bg-white/80 dark:hover:bg-white/[0.06] transition-all duration-300 relative"
               >
-                <td className="px-6 py-4">
-                  <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">
+                <td className="px-4 py-4 rounded-l-xl border-y border-l border-slate-200 dark:border-white/5 group-hover/row:border-blue-500/30 transition-colors">
+                  <p className="text-xs font-bold text-slate-500 dark:text-slate-400">
                     {new Date(t.date).toLocaleDateString("en-IN", {
                       day: "numeric",
                       month: "short",
-                      year: "numeric",
                     })}
                   </p>
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-4 py-4 border-y border-slate-200 dark:border-white/5 group-hover/row:border-blue-500/30 transition-colors">
                   <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center text-base border border-slate-200 dark:border-slate-700 group-hover/row:border-slate-300 dark:group-hover/row:border-slate-600 transition-colors">
+                    <div className="w-9 h-9 bg-slate-100 dark:bg-white/5 rounded-lg flex items-center justify-center text-lg border border-slate-200 dark:border-white/10 group-hover/row:scale-110 transition-transform duration-300">
                       {t.icon}
                     </div>
-                    <p className="text-sm font-semibold text-slate-900 dark:text-white">{t.name}</p>
+                    <div>
+                      <p className="text-sm font-bold text-slate-900 dark:text-white tracking-tight">{t.name}</p>
+                      <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">{t.status || "Completed"}</p>
+                    </div>
                   </div>
                 </td>
-                <td className="px-6 py-4">
-                  <span className="text-xs font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/30 px-2.5 py-1 rounded-md">
+                <td className="px-4 py-4 border-y border-slate-200 dark:border-white/5 group-hover/row:border-blue-500/30 transition-colors">
+                  <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-white/5 px-2 py-1 rounded-md border border-slate-200 dark:border-white/5">
                     {t.category}
                   </span>
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-4 py-4 border-y border-slate-200 dark:border-white/5 group-hover/row:border-blue-500/30 transition-colors">
                   <span
                     className={cn(
-                      "inline-flex px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase border",
+                      "inline-flex px-2 py-1 rounded-lg text-[10px] font-bold tracking-wider uppercase border",
                       t.type === "Income"
-                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
-                        : "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20",
+                        ? "bg-[#66C2A5]/10 text-[#66C2A5] border-[#66C2A5]/20"
+                        : "bg-[#E06666]/10 text-[#E06666] border-[#E06666]/20",
                     )}
                   >
                     {t.type}
                   </span>
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-4 py-4 border-y border-slate-200 dark:border-white/5 group-hover/row:border-blue-500/30 transition-colors text-right">
                   <span
                     className={cn(
-                      "text-sm font-bold tracking-tight",
-                      t.type === "Income" ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400",
+                      "text-sm font-bold tracking-tight font-mono",
+                      t.type === "Income" ? "text-[#66C2A5]" : "text-[#E06666]",
                     )}
                   >
                     {t.type === "Income" ? "+" : "-"}₹
@@ -588,25 +590,27 @@ const Transactions = () => {
                     })}
                   </span>
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-4 py-4 rounded-r-xl border-y border-r border-slate-200 dark:border-white/5 group-hover/row:border-blue-500/30 transition-colors text-right">
                   {role === "admin" ? (
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-end gap-2 opacity-0 group-hover/row:opacity-100 transition-opacity">
                       <button
                         onClick={() => handleEditTx(t)}
-                        className="px-3 py-1.5 text-xs font-bold text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-colors"
+                        className="p-1.5 text-slate-400 hover:text-blue-400 transition-colors"
+                        title="Edit"
                       >
-                        Edit
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                       </button>
                       <button
                         onClick={() => deleteTransaction(t.id)}
-                        className="px-3 py-1.5 text-xs font-bold text-red-500 dark:text-red-400 border border-red-200 dark:border-red-600/50 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 hover:border-red-500 transition-colors"
+                        className="p-1.5 text-slate-400 hover:text-red-400 transition-colors"
+                        title="Delete"
                       >
-                        Delete
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                       </button>
                     </div>
                   ) : (
-                    <span className="text-xs text-slate-500 font-medium">
-                      View only
+                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">
+                      Locked
                     </span>
                   )}
                 </td>
