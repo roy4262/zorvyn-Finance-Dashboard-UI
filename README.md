@@ -36,7 +36,7 @@ but as a **real-world fintech product simulation**.
 ## 🎬 Live Experience
 
 <p align="center">
-  <a href="https://zorvyn-finance-dashboard.vercel.app">
+  <a href="https://zorvyn-finance-dashboard-ui-dusky.vercel.app/">
     <img src="https://img.shields.io/badge/🚀%20Live%20Demo-View%20Project-black?style=for-the-badge"/>
   </a>
 </p>
