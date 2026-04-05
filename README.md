@@ -50,16 +50,11 @@ but as a **real-world fintech product simulation**.
 ## 🎥 Product Preview (Replace with GIFs)
 
 <p align="center">
-  <img src="https://via.placeholder.com/800x400.png?text=Dashboard+Preview"/>
+ <img width="1919" height="989" alt="image" src="https://github.com/user-attachments/assets/2162a37f-805f-4337-8281-d45e7e9115aa" />
+
 </p>
 
-<p align="center">
-  <img src="https://via.placeholder.com/800x400.png?text=Transactions+Flow"/>
-</p>
 
-<p align="center">
-  <img src="https://via.placeholder.com/800x400.png?text=Insights+System"/>
-</p>
 
 ---
 
